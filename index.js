@@ -221,24 +221,24 @@ app.post("/postImageStepOne", (req, res) => {
         res.send(err);
     });
 });
-app.post("/imageUpload", upload.single("files[]"), (req, res) => {
+app.post("/imageUpload", (req, res) => {
     console.log(req.body);
-    (0, axios_1.default)({
-        url: req.body.url,
-        method: "POST",
-        data: req.body.img,
-        headers: {
-            Authorization: "Bearer " + req.body.accessToken,
-            "Content-Type": "image/png",
-        },
-    })
-        .then((response) => {
-        res.send("Posted image");
-    })
-        .catch((err) => {
-        console.log(err);
-        res.send(err);
-    });
+    // axios({
+    //   url: req.body.url,
+    //   method: "POST",
+    //   data: req.body.img,
+    //   headers: {
+    //     Authorization: "Bearer " + req.body.accessToken,
+    //     "Content-Type": "image/png",
+    //   },
+    // })
+    //   .then((response) => {
+    //     res.send("Posted image");
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //     res.send(err);
+    //   });
 });
 app.listen(port, () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);

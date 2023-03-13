@@ -203,24 +203,24 @@ app.post("/postImageStepOne", (req, res) => {
     });
 });
 
-app.post("/imageUpload", upload.single("files[]"), (req, res) => {
+app.post("/imageUpload", (req, res) => {
   console.log(req.body);
-  axios({
-    url: req.body.url,
-    method: "POST",
-    data: req.body.img,
-    headers: {
-      Authorization: "Bearer " + req.body.accessToken,
-      "Content-Type": "image/png",
-    },
-  })
-    .then((response) => {
-      res.send("Posted image");
-    })
-    .catch((err) => {
-      console.log(err);
-      res.send(err);
-    });
+  // axios({
+  //   url: req.body.url,
+  //   method: "POST",
+  //   data: req.body.img,
+  //   headers: {
+  //     Authorization: "Bearer " + req.body.accessToken,
+  //     "Content-Type": "image/png",
+  //   },
+  // })
+  //   .then((response) => {
+  //     res.send("Posted image");
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //     res.send(err);
+  //   });
 });
 
 app.listen(port, () => {
