@@ -1,22 +1,27 @@
-//Configuring .env
-import * as dotenv from "dotenv";
-dotenv.config();
-
 //Crucial Imports
 import axios from "axios";
 import express, { Express, Request, response, Response } from "express";
 import bodyParser from "body-parser";
 import multer from "multer";
-const upload = multer({ dest: "uploads/" });
-
+import path from "path";
+const upload = multer.memoryStorage();
+var formidable = require("formidable");
+import * as fs from "fs";
 //Declaring Important variables
 const app: Express = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 5000;
 
 //Using Middlewares
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(
+  bodyParser.raw({
+    type: "image/jpg",
+    limit: "10mb",
+  })
+);
 
+app.use("/public", express.static(path.join(__dirname, "public")));
 //Routes-->
 app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to backend homepage");
@@ -179,6 +184,7 @@ app.post("/postArticle/Image", (req, res) => {
 });
 
 app.post("/postImageStepOne", (req, res) => {
+  console.log(req.body);
   axios({
     url: "https://api.linkedin.com/rest/images?action=initializeUpload",
     method: "POST",
@@ -203,26 +209,31 @@ app.post("/postImageStepOne", (req, res) => {
     });
 });
 
-app.post("/imageUpload", (req, res) => {
-  console.log(req.body);
-  // axios({
-  //   url: req.body.url,
-  //   method: "POST",
-  //   data: req.body.img,
-  //   headers: {
-  //     Authorization: "Bearer " + req.body.accessToken,
-  //     "Content-Type": "image/png",
-  //   },
-  // })
-  //   .then((response) => {
-  //     res.send("Posted image");
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //     res.send(err);
-  //   });
-});
+app.post(
+  "/imageUpload",
+  multer({ storage: multer.memoryStorage() }).single("file"),
+  (req, res) => {
+    console.log(req.file);
+
+    axios({
+      url: req.body.url,
+      method: "POST",
+      data: req.file?.buffer,
+      headers: {
+        Authorization: "Bearer " + req.body.accessToken,
+        "Content-Type": req?.file?.mimetype,
+      },
+    })
+      .then((response) => {
+        res.send("Posted image");
+      })
+      .catch((err) => {
+        console.log(err);
+        res.send(err);
+      });
+  }
+);
 
 app.listen(port, () => {
-  console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+  console.log(`⚡️[server]: Server is running at http://localhost:${port}/`);
 });
