@@ -36,7 +36,7 @@ app.post("/saveGroups", (req: Request, res: Response) => {
   axios({
     url: `https://api.linkedin.com/v2/groupMemberships?q=member&member=${req.body.personURN}&membershipStatuses=MEMBER`,
     method: "GET",
-  }).then((response: Response) => {
+  }).then((response) => {
     res.send(response.data);
   });
 });
