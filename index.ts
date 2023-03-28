@@ -32,7 +32,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to backend homepage");
 });
 
-app.get("/saveGroups", (req: Request, res: Response) => {
+app.post("/saveGroups", (req: Request, res: Response) => {
   axios({
     url: `https://api.linkedin.com/v2/groupMemberships?q=member&member=${req.body.personURN}&membershipStatuses=MEMBER`,
     method: "GET",
