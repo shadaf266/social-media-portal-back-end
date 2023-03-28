@@ -4,10 +4,10 @@ import express, { Express, Request, response, Response } from "express";
 import bodyParser from "body-parser";
 import multer from "multer";
 import path from "path";
-const upload = multer.memoryStorage();
-var formidable = require("formidable");
-import * as fs from "fs";
+import cors from "cors";
+
 //Declaring Important variables
+const upload = multer.memoryStorage();
 const app: Express = express();
 const port = process.env.PORT;
 
@@ -18,6 +18,11 @@ app.use(
   bodyParser.raw({
     type: "image/jpg",
     limit: "10mb",
+  })
+);
+app.use(
+  cors({
+    origin: process.env.APP_URL,
   })
 );
 
