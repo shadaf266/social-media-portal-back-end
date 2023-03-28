@@ -1,6 +1,6 @@
 //Crucial Imports
 import axios from "axios";
-import express, { Express, Request, response, Response } from "express";
+import express, { Express, Request, Response } from "express";
 import bodyParser from "body-parser";
 import multer from "multer";
 import path from "path";
