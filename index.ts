@@ -9,7 +9,7 @@ var formidable = require("formidable");
 import * as fs from "fs";
 //Declaring Important variables
 const app: Express = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT;
 
 //Using Middlewares
 app.use(bodyParser.urlencoded({ extended: true }));
