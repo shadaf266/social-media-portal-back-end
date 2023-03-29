@@ -5,7 +5,8 @@ import bodyParser from "body-parser";
 import multer from "multer";
 import path from "path";
 import cors from "cors";
-
+import dotenv from "dotenv";
+dotenv.config();
 //Declaring Important variables
 const upload = multer.memoryStorage();
 const app: Express = express();
@@ -34,20 +35,38 @@ app.get("/", (req: Request, res: Response) => {
 
 app.post("/saveGroups", (req: Request, res: Response) => {
   axios({
-    url: `https://api.linkedin.com/v2/groupMemberships?q=member&member=${req.body.personURN}&membershipStatuses=MEMBER`,
+    url: `https://api.linkedin.com/v2/groupMemberships?q=member&member=urn:li:person:${req.body.personURN}&membershipStatuses=MEMBER`,
     method: "GET",
-  }).then((response) => {
-    res.send(response.data);
-  });
+    headers: {
+      Authorization: "Bearer " + req.body.accessToken,
+    },
+  })
+    .then((response) => {
+      res.send(response.data);
+    })
+    .catch((err) => {
+      res.send(err.data);
+    });
+});
+
+app.post("/savePages", (req: Request, res: Response) => {
+  axios({
+    url: "https://api.linkedin.com/v2/organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&state=APPROVED&projection=(*,elements*(*,organizationalTarget~(*)))",
+    method: "get",
+    headers: {
+      Authorization: "Bearer " + req.body.accessToken,
+    },
+  })
+    .then((response) => res.send(response.data))
+    .catch((err) => res.send(err.data));
 });
 
 app.post("/postText", (req: Request, res: Response) => {
-  console.log(req.body);
   axios({
     url: "https://api.linkedin.com/rest/posts",
     method: "POST",
     data: {
-      author: `urn:li:person:${req.body.id}`,
+      author: req.body.id,
       commentary: req.body.content,
       visibility: req.body.scope,
       distribution: {
@@ -69,6 +88,7 @@ app.post("/postText", (req: Request, res: Response) => {
       res.send("completed");
     })
     .catch((err) => {
+      console.log(err);
       res.send("Error");
     });
 });
@@ -83,7 +103,7 @@ app.post("/postPoll", (req, res) => {
     url: "https://api.linkedin.com/rest/posts",
     method: "POST",
     data: {
-      author: `urn:li:person:${req.body.id}`,
+      author: req.body.id,
       commentary: req.body.title,
       visibility: req.body.scope,
       distribution: {
@@ -123,7 +143,7 @@ app.post("/postArticle/Link", (req: Request, res: Response) => {
     url: "https://api.linkedin.com/rest/posts",
     method: "POST",
     data: {
-      author: `urn:li:person:${req.body.id}`,
+      author: req.body.id,
       commentary: req.body.text,
       visibility: req.body.scope,
       distribution: {
@@ -163,7 +183,7 @@ app.post("/postArticle/Image", (req, res) => {
     url: "https://api.linkedin.com/rest/posts",
     method: "POST",
     data: {
-      author: `urn:li:person:${req.body.id}`,
+      author: req.body.id,
       commentary: req.body.title,
       visibility: req.body.scope,
       distribution: {
@@ -204,7 +224,7 @@ app.post("/postImageStepOne", (req, res) => {
     method: "POST",
     data: {
       initializeUploadRequest: {
-        owner: `urn:li:person:${req.body.id}`,
+        owner: req.body.id,
       },
     },
     headers: {
@@ -256,7 +276,7 @@ app.post("/postVideoStepOne", (req, res) => {
     method: "POST",
     data: {
       initializeUploadRequest: {
-        owner: `urn:li:person:${req.body.id}`,
+        owner: req.body.id,
         fileSizeBytes: 1055736,
         uploadCaptions: false,
         uploadThumbnail: false,
@@ -330,12 +350,12 @@ app.post("/videoFinalizeStepThree", (req, res) => {
 });
 
 app.post("/postArticle/Video", (req, res) => {
-  console.log(req.file);
+  console.log(req.body);
   axios({
     url: "https://api.linkedin.com/rest/posts",
     method: "POST",
     data: {
-      author: `urn:li:person:${req.body.id}`,
+      author: req.body.id,
       commentary: req.body.title,
       visibility: req.body.scope,
       distribution: {
