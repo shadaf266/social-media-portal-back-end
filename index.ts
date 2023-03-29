@@ -51,7 +51,7 @@ app.post("/saveGroups", (req: Request, res: Response) => {
 
 app.post("/savePages", (req: Request, res: Response) => {
   axios({
-    url: "https://api.linkedin.com/v2/organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR&state=APPROVED&projection=(*,elements*(*,organizationalTarget~(*)))",
+    url: "https://api.linkedin.com/v2/organizationalEntityAcls?q=roleAssignee&role=ADMINISTRATOR%20CONTENT_ADMINISTRATOR&state=APPROVED&projection=(*,elements*(*,organizationalTarget~(*)))",
     method: "get",
     headers: {
       Authorization: "Bearer " + req.body.accessToken,
