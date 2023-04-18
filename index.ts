@@ -10,7 +10,7 @@ dotenv.config();
 //Declaring Important variables
 const upload = multer.memoryStorage();
 const app: Express = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 5000;
 
 //Using Middlewares
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -386,6 +386,59 @@ app.post("/postArticle/Video", (req, res) => {
     .catch((e) => {
       console.log(e);
       res.send("Error");
+    });
+});
+
+
+app.post("/fbfetchGroups", (req: Request, res: Response) => {
+  axios({
+    url: `https://graph.facebook.com/${req.body.id}/groups`,
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + req.body.accessToken,
+    },
+  })
+    .then((response) => {
+      console.log(response)
+      res.send(response.data);
+    })
+    .catch((err) => {
+      res.send(err.data);
+    });
+});
+
+app.post("/fbfetchPages", (req: Request, res: Response) => {
+  axios({
+    url: `https://graph.facebook.com/${req.body.id}/accounts`,
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + req.body.accessToken,
+    },
+  })
+    .then((response) => {
+      console.log(response)
+      res.send(response.data);
+    })
+    .catch((err) => {
+      res.send(err.data);
+    });
+});
+
+app.post("/postTextFb", (req: Request, res: Response) => {
+  axios({
+    url: `https://graph.facebook.com/${req.body.id}/feed`,
+    method: "POST",
+    data:{message:req.body.content},
+    headers: {
+      Authorization: "Bearer " + req.body.accessToken,
+    },
+  })
+    .then((response) => {
+      console.log(response)
+      res.send(response.data);
+    })
+    .catch((err) => {
+      res.send(err.data);
     });
 });
 
